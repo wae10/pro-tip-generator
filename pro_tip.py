@@ -111,7 +111,7 @@ def write_to_doc(filepath):
 
     
     # if the document actually has pro tips to be written...
-    if len(results_list) > 1:
+    if len(results_list) > 0:
 
 
         # print(result) #string
@@ -136,16 +136,6 @@ def write_to_doc(filepath):
             for i in document.paragraphs:
                 document_list.append(i.text)
 
-            os.remove(path) #remove pro tip file so that I can create it again and reformat date postings
-
-            #create new protip file
-            document = Document()
-
-            header = document.sections[0].header #create header
-
-            header.paragraphs[0].text = class_folder + ' Pro Tips'
-
-            header.paragraphs[0].alignment = 1
 
             now = datetime.datetime.now().strftime("%m/%d")
 
@@ -163,18 +153,26 @@ def write_to_doc(filepath):
 
             # print("DOCUMENT CONTENTS:", document_list)
 
+            # remove date from list
+            if now in document_list:
+                document_list.remove(now)
 
-            if now in document_list: # date already exists in document
-                for i in range(len(results_list)):
-                    # print(results_list[i])
-                    if results_list[i] not in doc_text:
-                        document.add_paragraph(results_list[i], style='ListBullet')
-                # print("I didn't add date")
+            
+    
 
 
-            else: # date has not yet been added, this is first time running the application today
+            if results_list[0] not in document_list:
 
-                # print("im adding date....")
+                os.remove(path) #remove pro tip file so that I can create it again and reformat date postings
+
+                #create new protip file
+                document = Document()
+
+                header = document.sections[0].header #create header
+
+                header.paragraphs[0].text = class_folder + ' Pro Tips'
+
+                header.paragraphs[0].alignment = 1
 
 
                 date = document.add_paragraph(now) #add date
@@ -186,25 +184,28 @@ def write_to_doc(filepath):
                 for i in range(len(results_list)):
                     # print(results_list[i])
                     if results_list[i] not in doc_text:
+                
                         paragraph = document.add_paragraph(results_list[i], style='ListBullet')
                         paragraph_format = paragraph.paragraph_format
 
                         paragraph_format.line_spacing = Pt(18)
 
 
-            # add original elements to pro tip doc
-            for i in range(len(document_list)):
-                if any(char.isdigit() for char in document_list[i]) and '/' in document_list[i]:
-                    date = document.add_paragraph(document_list[i])
-                    date.alignment = 1
+                # add original elements to pro tip doc
+                for i in range(len(document_list)):
+                    if any(char.isdigit() for char in document_list[i]) and '/' in document_list[i]:
+                        date = document.add_paragraph(document_list[i])
+                        date.alignment = 1
 
-                else:
-                    paragraph = document.add_paragraph(document_list[i], style='ListBullet')
-                    paragraph_format = paragraph.paragraph_format
+                    else:
+                        paragraph = document.add_paragraph(document_list[i], style='ListBullet')
+                        paragraph_format = paragraph.paragraph_format
 
-                    paragraph_format.line_spacing = Pt(18)
+                        paragraph_format.line_spacing = Pt(18)
 
-            document.save(path)
+
+
+                document.save(path)
 
         # if pro tip file does not exist
         else:
@@ -251,13 +252,12 @@ if __name__ == "__main__":
 
     print("\nWelcome to the Pro Tip Generator. Choose your class below or enter 'all' to select all. Enter 'stop' to end program.")
 
-    class_name = input("\n1. ANTH-001\n2. COSC-052\n3. FINC-212\n4. FINC-241\n5. OPIM-258\n\nCourse: ")
-
+    class_name = input("\n1. OPIM-230\n2. COSC-052\n3. FINC-212\n4. FINC-241\n5. OPIM-258\n\nCourse: ")
 
     if class_name.upper() == "ALL":
 
-        class_name = "ANTH-001/Notes.docx"
-        write_to_doc(class_name)
+        # class_name = "OPIM-230/Notes.docx"
+        # write_to_doc(class_name)
 
         class_name = "COSC-052/Notes.docx"
         write_to_doc(class_name)
@@ -275,9 +275,9 @@ if __name__ == "__main__":
 
         while class_name.upper() != "STOP":
 
-            if class_name == '1':
-                class_name = "ANTH-001/Notes.docx"
-                write_to_doc(class_name)
+            # if class_name == '1':
+            #     class_name = "OPIM-230/Notes.docx"
+            #     write_to_doc(class_name)
 
             if class_name == '2':
                 class_name = "COSC-052/Notes.docx"
@@ -296,7 +296,7 @@ if __name__ == "__main__":
                 write_to_doc(class_name)
 
             
-            class_name = input("\n1. ANTH-001\n2. COSC-052\n3. FINC-212\n4. FINC-241\n5. OPIM-258\n\nCourse: ")
+            class_name = input("\n1. OPIM-230\n2. COSC-052\n3. FINC-212\n4. FINC-241\n5. OPIM-258\n\nCourse: ")
 
 
 
